@@ -1,0 +1,26 @@
+@import './buttons.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+[x-cloak] {
+    display: none;
+}
+
+.toast-success {
+    background-color: #0000FF !important; /* Color de fondo personalizado */
+}
+
+.toast-error {
+    background-color: #FF0000 !important; /* Color de fondo para errores */
+}
+
+.toast-info {
+    background-color: #00FFFF !important; /* Color de fondo para información */
+}
+
+.toast-warning {
+    background-color: #FFFF00 !important; /* Color de fondo para advertencias */
+}
