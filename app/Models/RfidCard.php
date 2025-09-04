@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class RfidCard extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'codigo_rfid',
+        'fecha_emision',
+        'people_id',
+    ];
 
     public function people()
     {

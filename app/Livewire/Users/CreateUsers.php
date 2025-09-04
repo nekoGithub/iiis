@@ -3,12 +3,15 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Yoeunes\Toastr\Facades\Toastr;
 
 class CreateUsers extends Component
 {
+    use AuthorizesRequests;
+    
     public $open = false;
     public $name, $email, $password, $password_confirmation;
 
@@ -50,6 +53,10 @@ class CreateUsers extends Component
         if (!$this->open) {
             $this->reset('name','email','password','password_confirmation');
         }
+    }
+
+    public function mount(){
+        $this->authorize('admin.users.create');        
     }
 
 

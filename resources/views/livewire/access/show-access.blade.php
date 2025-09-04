@@ -1,31 +1,57 @@
 <div wire:poll ="2">
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="px-6 py-4 flex items-center">
+
+            <div class="flex items-center dark:text-white">
+                <span>Mostrar</span>
+
+                <select wire:model.live="cantidad"
+                    class="mx-2 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+
+                <span>Entradas</span>
+            </div>
+
+            <x-input type="text" class="flex-1 mx-5" wire:model.live="search"
+                placeholder="🔎 Escriba lo que esta buscando..." />
+        </div>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Nro.
                     </th>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Personal
                     </th>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Tarjeta RFID
                     </th>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Fecha de Asignación
                     </th>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Hora de Entrada
                     </th>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Hora de Salida
                     </th>
-                    <th scope="col" class="cursor-pointer px-6 py-3">
+                    <th scope="col"
+                        class="cursor-pointer px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         Ubicación
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                        Action
+                    <th scope="col" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        Acciones
                     </th>
                 </tr>
             </thead>
@@ -38,7 +64,7 @@
                             {{ $item->id }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ $item->people->name }} {{ $item->people->last_name }} 
+                            {{ $item->people->name }} {{ $item->people->last_name }}
                         </td>
                         <td class="px-6 py-4">
                             {{ $item->card->codigo_rfid }}
@@ -47,11 +73,26 @@
                             {{ $item->fecha_acceso }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ $item->hora_entrada }}
+                            <span
+                                class="inline-flex items-center px-2 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                                {{ $item->hora_entrada }}
+                            </span>
                         </td>
                         <td class="px-6 py-4">
-                            {{ $item->hora_salida ?? 'No se registro' }}
+                            @if ($item->hora_salida)
+                                <span
+                                    class="inline-flex items-center px-2 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
+                                    {{ $item->hora_salida }}
+                                </span>
+                            @else
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-red-800 bg-red-100 rounded-full dark:bg-red-900 dark:text-red-300">
+                                    No se registró
+                                </span>
+                            @endif
+
                         </td>
+
                         <td class="px-6 py-4">
                             {{ $item->ubicacion }}
                         </td>
@@ -72,13 +113,10 @@
 </div>
 @push('js')
     <script>
-        // Este script puede ir en tu layout o directamente en la vista que carga Livewire
         window.addEventListener('load', () => {
-            // Escucha eventos desde el backend (usando Echo o WebSockets si tienes)
-            // O simplemente lanza el evento manualmente si sabes que ya se guardó
             setInterval(() => {
                 Livewire.dispatch('actualizar-datos');
-            }, 5000); // cada 5 segundos, por ejemplo
+            }, 5000);
         });
     </script>
 @endpush

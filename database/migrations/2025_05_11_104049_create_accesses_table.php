@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accesses', function (Blueprint $table) {
-            $table->id();
+            Schema::create('accesses', function (Blueprint $table) {
+                $table->id();
 
-            $table->foreignId('people_id')->constrained('peoples')->onDelete('cascade');
-            $table->foreignId('card_id')->constrained('rfid_cards')->onDelete('cascade');
-            $table->timestamp('fecha_acceso'); 
-            $table->time('hora_entrada');
-            $table->time('hora_salida')->nullable(); 
-            $table->string('ubicacion'); 
+                $table->foreignId('people_id')->constrained('peoples')->onDelete('cascade');
+                $table->foreignId('card_id')->constrained('rfid_cards')->onDelete('cascade');
+                $table->timestamp('fecha_acceso'); 
+                $table->time('hora_entrada');
+                $table->time('hora_salida')->nullable(); 
+                $table->string('ubicacion'); 
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
     }
 
     /**

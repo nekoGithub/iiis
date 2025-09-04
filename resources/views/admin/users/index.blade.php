@@ -2,10 +2,11 @@
     [
         'name' => 'Dashboard',
         'route' => route('admin.dashboard'),
+        'class' => 'text-gray-900 dark:text-white font-semibold',
     ],
     [
         'name' => 'Usuarios',
-        
+        'class' => 'text-gray-900 dark:text-white font-semibold',
     ],
   
 ]">

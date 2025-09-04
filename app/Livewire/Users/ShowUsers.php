@@ -2,15 +2,19 @@
 
 namespace App\Livewire\Users;
 
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Yoeunes\Toastr\Facades\Toastr;
 use Livewire\WithPagination;
 
+
 class ShowUsers extends Component
 { 
     use WithPagination;
+    use AuthorizesRequests;
 
     /* Propiedades Listar */
     public $search = "";
@@ -22,6 +26,8 @@ class ShowUsers extends Component
     public $user;
     public $userEdit = [];
     public $openEdit = false;
+    public $roles = [];
+    public $userRoles =[];
 
     /* Inicio de seccion de listar Users */
     public function order($sort)
@@ -73,6 +79,12 @@ class ShowUsers extends Component
 
     public function edit(User $user)
     {
+        $this->authorize('admin.users.edit');
+
+        $this->roles = Role::all();
+
+        $this->userRoles = $user->roles->pluck('name')->toArray();
+
         $this->user = $user;
         $this->userEdit = $user->only('name', 'email');
         $this->openEdit = true;
@@ -85,9 +97,13 @@ class ShowUsers extends Component
 
     public function update()
     {
+        $this->authorize('admin.users.edit');
+
         $this->validate();
 
         $this->user->update($this->userEdit);
+        
+        $this->user->syncRoles($this->userRoles);
 
         Toastr::success('Se ha actualizado correctamente.', 'Notificación', [
             'timeOut' => 5000,
@@ -100,6 +116,9 @@ class ShowUsers extends Component
     /* Fin de seccion de editar user */
 
     public function deleteUser($id){
+
+        $this->authorize('admin.users.destroy');
+
         $user = User::find($id);
         if ($user) {
             $user->delete();
@@ -107,11 +126,18 @@ class ShowUsers extends Component
         }
     }
 
+    public function mount(){
+        $this->authorize('admin.users.index');
+    }
+
     public function render()
     {
         if ($this->readyToLoad) {
-            $users = User::where('name', 'like', '%' . $this->search . '%')
+            $users = User::with('roles')
+                ->where('id', 'like', '%' . $this->search . '%')
+                ->orWhere('name', 'like', '%' . $this->search . '%')
                 ->orWhere('email', 'like', '%' . $this->search . '%')
+                ->orWhere('created_at', 'like', '%' . $this->search . '%')
                 ->orderBy($this->sort, $this->direction)
                 ->paginate($this->cantidad);            
         }else {

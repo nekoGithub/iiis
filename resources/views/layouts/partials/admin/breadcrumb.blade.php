@@ -4,17 +4,19 @@
             @foreach ($breadcrumbs as $item)
                 <li class="text-sm leading-normal text-slate-700 {{ !$loop->first ? "pl-2 before:float-left before:pr-2 before:content-['/']" : ''}}">
                     @isset($item['route'])
-                        <a href="{{ $item['route'] }}" class="opacity-50">
+                        <a href="{{ $item['route'] }}" class="opacity-50 {{ $item['class'] ?? '' }}">
                             {{ $item['name'] }}
                         </a>
                     @else
-                        {{ $item['name'] }}
+                        <span class="{{ $item['class'] ?? '' }}">
+                            {{ $item['name'] }}
+                        </span>
                     @endisset
                 </li>
             @endforeach
         </ul>
         @if (count($breadcrumbs) > 1)
-            <h6 class="font-bold">
+            <h6  class="font-bold {{ $lastItem['class'] ?? 'text-gray-900 dark:text-white' }}">
                 {{ end($breadcrumbs)['name'] }}
             </h6>
         @endif

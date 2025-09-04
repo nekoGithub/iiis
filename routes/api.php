@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\AccessController;
+use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\RfidCardController;
+use App\Models\Access;
+use App\Models\RfidCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -21,13 +24,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/rfid-status/{id}', [RfidCardController::class, 'verificarEstadoRFID']);
 
-Route::post('/rfid', [RfidCardController::class, 'store']);
 
-Route::post('/rfid-assign-waiting',[RfidCardController::class, 'assignWaiting']);
+// routes/api.php
 
-// Para los access  
-Route::get('access/rfid', [AccessController::class, 'procesarAccesoPorRfid']);
+// Api para registrar primero verifica /verificar-rfid/{id} y 
+// y despues hacemos una peticion post para guardar /asociar-rfid.
+Route::get('/verificar-rfid/{id}', [RfidCardController::class, 'verificar']);
+Route::post('/asociar-rfid',[RfidCardController::class, 'store']);
 
-/* Route::post('/rfid-access', [AccessController::class, 'registrarAcceso']); */
+// Hacemos una peticion y hacemos el registro de entradas y salidas
+Route::post('/registrar-acceso', [AccessController::class, 'registrarAcceso']);
+
+// Api para ver en pantalla 
+Route::get('/ultimo-acceso', [AccessController::class ,'ultimoAccess']);
+
