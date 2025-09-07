@@ -116,137 +116,146 @@
         function asignarRFID(id, event) {
             event.preventDefault();
 
-            const ipArduino = 'http://172.20.20.97';
-            const url = `${ipArduino}/recibir-id?id=${id}`;
-            const maxAttempts = 10;
-            const interval = 4000;
-            let attempts = 0;
-            let verificarInterval;
-            let timerInterval;
+            $.get('/api/dispositivo/esp32rfid', function(device) {
+                const ipArduino = `http://${device.ip}`;
+                const url = `${ipArduino}/recibir-id?id=${id}`;
+                const maxAttempts = 10;
+                const interval = 4000;
+                let attempts = 0;
+                let verificarInterval;
+                let timerInterval;
 
-            const button = document.querySelector(`#boton-enviar-${id}`);
-            if (button) {
-                button.disabled = true;
-                button.classList.remove('bg-amber-500');
-                button.classList.add('bg-blue-500');
-                button.innerText = 'Esperando...';
-            }
+                const button = document.querySelector(`#boton-enviar-${id}`);
+                if (button) {
+                    button.disabled = true;
+                    button.classList.remove('bg-amber-500');
+                    button.classList.add('bg-blue-500');
+                    button.innerText = 'Esperando...';
+                }
 
-            Swal.fire({
-                title: "Enviando ID al Arduino...",
-                html: "Esperando lectura de tarjeta...<br>Tiempo restante: <b id='timer-count'></b> ms",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => {
-                    Swal.showLoading();
+                Swal.fire({
+                    title: "Enviando ID al Arduino...",
+                    html: "Esperando lectura de tarjeta...<br>Tiempo restante: <b id='timer-count'></b> ms",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
 
-                    // Control manual del timer
-                    let tiempoRestante = maxAttempts * interval;
-                    const b = Swal.getHtmlContainer().querySelector('b#timer-count');
-                    if (b) b.textContent = tiempoRestante;
-
-                    timerInterval = setInterval(() => {
-                        tiempoRestante -= 100;
-                        if (tiempoRestante < 0) tiempoRestante = 0;
+                        // Control manual del timer
+                        let tiempoRestante = maxAttempts * interval;
+                        const b = Swal.getHtmlContainer().querySelector('b#timer-count');
                         if (b) b.textContent = tiempoRestante;
-                    }, 100);
 
-                    $.ajax({
-                        url: url,
-                        method: 'GET',
-                        success: function(response) {
-                            
-                            console.log("✅ Arduino respondió:", response);
+                        timerInterval = setInterval(() => {
+                            tiempoRestante -= 100;
+                            if (tiempoRestante < 0) tiempoRestante = 0;
+                            if (b) b.textContent = tiempoRestante;
+                        }, 100);
 
-                            const verificarRFID = () => {
-                                if (attempts >= maxAttempts) {
-                                    clearInterval(verificarInterval);
-                                    clearInterval(timerInterval);
-                                    Swal.close();
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                            success: function(response) {
 
-                                    if (button) {
-                                        button.disabled = false;
-                                        button.classList.remove('bg-blue-500');
-                                        button.classList.add('bg-amber-500');
-                                        button.innerText = 'Asignar';
+                                console.log("✅ Arduino respondió:", response);
+
+                                const verificarRFID = () => {
+                                    if (attempts >= maxAttempts) {
+                                        clearInterval(verificarInterval);
+                                        clearInterval(timerInterval);
+                                        Swal.close();
+
+                                        if (button) {
+                                            button.disabled = false;
+                                            button.classList.remove('bg-blue-500');
+                                            button.classList.add('bg-amber-500');
+                                            button.innerText = 'Asignar';
+                                        }
+
+                                        Swal.fire(
+                                            'No se detectó la tarjeta',
+                                            'Intenta acercar nuevamente la tarjeta al lector.',
+                                            'warning'
+                                        );
+
+                                        return;
                                     }
 
-                                    Swal.fire(
-                                        'No se detectó la tarjeta',
-                                        'Intenta acercar nuevamente la tarjeta al lector.',
-                                        'warning'
-                                    );
+                                    $.ajax({
+                                        url: `/api/verificar-rfid/${id}`,
+                                        method: 'GET',
+                                        success: function(data) {
+                                            console.log(
+                                                "🔍 Verificando asignación:",
+                                                data); // <---- Agrega esto
+                                            console.log("✅ data.asignado:",
+                                                data.asignado);
+                                            if (data.asignado) {
+                                                clearInterval(
+                                                    verificarInterval);
+                                                clearInterval(
+                                                    timerInterval);
+                                                Swal
+                                                    .close(); // **Cerramos el swal de espera aquí**
 
-                                    return;
-                                }
+                                                if (button) {
+                                                    button.classList.remove(
+                                                        'bg-blue-500');
+                                                    button.classList.add(
+                                                        'bg-green-500');
+                                                    button.innerText =
+                                                        'Registrado ✔';
+                                                    button.disabled = true;
+                                                }
 
-                                $.ajax({
-                                    url: `/api/verificar-rfid/${id}`,
-                                    method: 'GET',
-                                    success: function(data) {
-                                           console.log("🔍 Verificando asignación:", data); // <---- Agrega esto
-                                           console.log("✅ data.asignado:", data.asignado);
-                                        if (data.asignado) {
-                                            clearInterval(verificarInterval);
-                                            clearInterval(timerInterval);
-                                            Swal
-                                        .close(); // **Cerramos el swal de espera aquí**
+                                                // Luego mostramos el swal de éxito
+                                                Swal.fire(
+                                                    '¡Tarjeta registrada!',
+                                                    'El RFID se detectó correctamente.',
+                                                    'success'
+                                                );
 
-                                            if (button) {
-                                                button.classList.remove(
-                                                    'bg-blue-500');
-                                                button.classList.add(
-                                                'bg-green-500');
-                                                button.innerText = 'Registrado ✔';
-                                                button.disabled = true;
-                                            }
 
-                                            // Luego mostramos el swal de éxito
-                                            Swal.fire(
-                                                '¡Tarjeta registrada!',
-                                                'El RFID se detectó correctamente.',
-                                                'success'
-                                            );
-
-                                            
-                                            window.livewire.emit('refreshComponent');
+                                                window.livewire.emit(
+                                                    'refreshComponent');
                                                 return;
-                                        } else {
+                                            } else {
+                                                attempts++;
+                                            }
+                                        },
+                                        error: function() {
                                             attempts++;
                                         }
-                                    },
-                                    error: function() {
-                                        attempts++;
-                                    }
-                                });
-                            };
+                                    });
+                                };
 
-                            verificarInterval = setInterval(verificarRFID, interval);
-                        },
-                        error: function(xhr, status, error) {
-                            clearInterval(verificarInterval);
-                            clearInterval(timerInterval);
-                            Swal.close();
+                                verificarInterval = setInterval(verificarRFID, interval);
+                            },
+                            error: function(xhr, status, error) {
+                                clearInterval(verificarInterval);
+                                clearInterval(timerInterval);
+                                Swal.close();
 
-                            if (button) {
-                                button.disabled = false;
-                                button.classList.remove('bg-blue-500');
-                                button.classList.add('bg-amber-500');
-                                button.innerText = 'Asignar';
+                                if (button) {
+                                    button.disabled = false;
+                                    button.classList.remove('bg-blue-500');
+                                    button.classList.add('bg-amber-500');
+                                    button.innerText = 'Asignar';
+                                }
+                                Swal.fire('Error',
+                                    'No se pudo enviar al Arduino. Verifica que esté conectado.',
+                                    'error');
                             }
-                            Swal.fire('Error',
-                                'No se pudo enviar al Arduino. Verifica que esté conectado.',
-                                'error');
-                        }
-                    });
-                },
-                willClose: () => {
-                    clearInterval(verificarInterval);
-                    clearInterval(timerInterval);
-                }
-            });
+                        });
+                    },
+                    willClose: () => {
+                        clearInterval(verificarInterval);
+                        clearInterval(timerInterval);
+                    }
+                });
 
-            return false;
+                return false;
+            });
         }
     </script>
 @endpush

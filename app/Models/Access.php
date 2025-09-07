@@ -16,6 +16,7 @@ class Access extends Model
         'hora_entrada',
         'hora_salida',
         'ubicacion',
+        'estado_salida'
     ];
 
     // Relación: un acceso pertenece a una persona

@@ -55,7 +55,7 @@
                     type="text"
                     wire:model.debounce.300ms="search"
                     placeholder="Escribe al menos 2 caracteres..."
-                    class="w-full p-3 rounded-lg border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('search') border-red-500 @enderror"
+                    class="w-full p-3 rounded-l dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('search') border-red-500 @enderror"
                 />
                 @error('search')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

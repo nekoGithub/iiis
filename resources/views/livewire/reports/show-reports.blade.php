@@ -19,7 +19,7 @@
             <input 
                 type="date" 
                 wire:model.lazy="fechaInicio"
-                class="w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600
+                class="w-full rounded dark:bg-gray-700 dark:text-white dark:border-gray-600
                        @error('fechaInicio') border-red-500 @enderror"
                 max="{{ now()->format('Y-m-d') }}"
             />
@@ -35,8 +35,8 @@
             <input 
                 type="date" 
                 wire:model.lazy="fechaFin"
-                class="w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600
-                       @error('fechaFin') border-red-500 @enderror"
+                class="w-full rounded dark:bg-gray-700 dark:text-white dark:border-gray-600
+                       @error('fechaFin') border-red-500  @enderror"
                 min="{{ $fechaInicio }}"
                 max="{{ now()->format('Y-m-d') }}"
             />

@@ -13,10 +13,14 @@
                         </path>
                     </svg>
                 </button>
-                <a href="https://flowbite.com" class="flex ms-2 md:me-24">
-                    <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" />
-                    <span
-                        class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center ml-4 sm:ml-0">
+                    <!-- Logo para modo claro -->
+                    <img src="/img/logo-light.png" alt="MOODTAG BTH Logo Dark" class="block dark:hidden h-8 me-3" />
+                    <!-- Logo para modo oscuro -->
+                    <img src="/img/logo-dark.png" alt="MOODTAG BTH Logo Light" class="hidden dark:block h-8 me-3" />
+                    <span class="self-center text-indigo-600 text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+                        MoodTag BTH
+                    </span>
                 </a>
             </div>
             <div class="flex items-center">

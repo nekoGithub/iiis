@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccessController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\RfidCardController;
 use App\Models\Access;
@@ -38,4 +39,9 @@ Route::post('/registrar-acceso', [AccessController::class, 'registrarAcceso']);
 
 // Api para ver en pantalla 
 Route::get('/ultimo-acceso', [AccessController::class ,'ultimoAccess']);
+
+// Api para asignar ip automaticamente
+Route::post('/registrar-dispositivo',[DeviceController::class, 'registrar']);
+
+Route::get('/dispositivo/{nombre}',[DeviceController::class, 'disposititvo']);
 

@@ -85,8 +85,11 @@
                 {{ $slot }}
             </div>
         </div>
+        @include('layouts.partials.admin.footer')
     </div>
     {{-- Fin de la plantilla --}}
+
+
 
     @livewireScripts
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0"></script>

@@ -1,4 +1,4 @@
-<div wire:poll ="2">
+<div wire:poll.2s>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="px-6 py-4 flex items-center">
 
@@ -80,17 +80,23 @@
                         </td>
                         <td class="px-6 py-4">
                             @if ($item->hora_salida)
-                                <span
-                                    class="inline-flex items-center px-2 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                                    {{ $item->hora_salida }}
-                                </span>
+                                @if ($item->estado_salida === 'definitiva')
+                                    <span
+                                        class="inline-flex items-center px-2 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        {{ $item->hora_salida }} (Definitiva)
+                                    </span>
+                                @elseif ($item->estado_salida === 'provisional')
+                                    <span
+                                        class="inline-flex items-center px-2 py-1 text-sm font-medium text-red-800 bg-red-100 rounded-full dark:bg-red-900 dark:text-red-300">
+                                        {{ $item->hora_salida }} (Provisional)
+                                    </span>
+                                @endif
                             @else
                                 <span
-                                    class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-red-800 bg-red-100 rounded-full dark:bg-red-900 dark:text-red-300">
+                                    class="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">
                                     No se registró
                                 </span>
                             @endif
-
                         </td>
 
                         <td class="px-6 py-4">

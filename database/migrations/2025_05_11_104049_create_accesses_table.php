@@ -19,6 +19,7 @@ return new class extends Migration
                 $table->timestamp('fecha_acceso'); 
                 $table->time('hora_entrada');
                 $table->time('hora_salida')->nullable(); 
+                $table->enum('estado_salida', ['provisional', 'definitiva'])->nullable();
                 $table->string('ubicacion'); 
 
                 $table->timestamps();
